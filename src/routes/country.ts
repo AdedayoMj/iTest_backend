@@ -4,7 +4,7 @@ import extractFirebaseInfo from '../middleware/extract_firebase_info';
 
 const router = express.Router();
 
-router.get('/country/:countryQuery',controller.getCountryByName);
-router.get('/',controller.getAll);
+router.get('/country/:countryQuery',extractFirebaseInfo,controller.getCountryByName);
+router.get('/',extractFirebaseInfo,controller.getAll);
 
 export = router;
