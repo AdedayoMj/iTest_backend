@@ -3,54 +3,52 @@ import { NextFunction, Request, Response } from 'express';
 import logging from '../config/logging';
 
 
-const getAll = (req: Request, res: Response, next: NextFunction) => {
+
+const getAll = async (req: Request, res: Response, next: NextFunction) => {
     logging.info('Getting all countries information from api ...');
 
-    axios.get('https://restcountries.eu/rest/v2/all')
-        .then((country) => {
-            return res.status(200).json({
-                countries:  country.data
-            });
+    try {
+        let response = await axios.get(`https://api.countrylayer.com/rest/v2/all?access_key=${process.env.COUNTRY_KEY}`,)
+  
+        return await res.status(200).json({
+            countries: response.data
+        });
+       
+    } catch (error: any) {
+        logging.error(error.message);
 
-            // Code for handling the response
-        })
-        .catch((error) => {
-            logging.error(error.message);
+        return res.status(500).json({
+            message: error.message
+        });
 
-            return res.status(500).json({
-                message: error.message
-            });
-            // Code for handling the error
-        })
+    }
 };
-const getCountryByName = (req: Request, res: Response, next: NextFunction) => {
+const getCountryByName = async (req: Request, res: Response, next: NextFunction) => {
     logging.info('Query coutries route called');
-    console.log(req.params);
-    const query = req.params.countryQuery;
-    
+    try {
+        const query = req.params.countryQuery;
+console.log(query)
 
-    axios.get(`https://restcountries.eu/rest/v2/name/${query}`)
-        .then((country) => {
-            if (country) {
-                return res.status(200).json({
-                    countries:  country.data
-                });
-            } else {
-                return res.status(404).json({
-                    error: 'Country not found.'
-                });
-            }
+        let response = await axios.get(`https://api.countrylayer.com/v2/name/${query}?access_key=${process.env.COUNTRY_KEY}`)
 
-            // Code for handling the response
-        })
-        .catch((error) => {
-            logging.error(error.message);
-
-            return res.status(500).json({
-                message: error.message
+        if (response) {
+            return res.status(200).json({
+                countries: response.data
             });
-            // Code for handling the error
-        })
+        } else {
+            return res.status(404).json({
+                error: 'Country not found.'
+            });
+        }
+
+    } catch (error: any) {
+        logging.error(error.message);
+
+        return res.status(500).json({
+            message: error.message
+        });
+        // Code for handling the error
+    }
 };
 export default {
     getCountryByName,

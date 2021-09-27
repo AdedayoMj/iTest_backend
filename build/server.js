@@ -31,6 +31,7 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv = __importStar(require("dotenv"));
 const firebase_admin_1 = __importDefault(require("firebase-admin"));
 const user_1 = __importDefault(require("./routes/user"));
+const country_1 = __importDefault(require("./routes/country"));
 const cluster_1 = __importDefault(require("cluster"));
 const os_1 = require("os");
 const process_1 = __importDefault(require("process"));
@@ -91,6 +92,7 @@ else {
     });
     /** Routes */
     router.use('/users', user_1.default);
+    router.use('/countries', country_1.default);
     /** Error handling */
     router.use((req, res, next) => {
         const error = new Error('Not found');
